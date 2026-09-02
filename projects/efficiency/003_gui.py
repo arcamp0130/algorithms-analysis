@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
 import random
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 class AnalyzerGUI:
   def __init__(self, root):
@@ -13,32 +15,52 @@ class AnalyzerGUI:
 
 
   def build(self):
-    frame = tk.Frame(self.root)
+    input_frame = tk.Frame(self.root, padx=10, pady=10, width=300)
+    input_frame.pack(side=tk.LEFT, fill=tk.Y)
 
-    tk.Label(self.root, text="Start").grid(padx=5, pady=10, row=0, column=0)
-    tk.Label(self.root, text="Increment").grid(padx=5, pady=10, row=1, column=0)
-    tk.Label(self.root, text="End").grid(padx=5, pady=10, row=2, column=0)
+    self.plot_frame = tk.Frame(self.root, padx=10, pady=10)
+    self.plot_frame.pack(fill=tk.BOTH, expand=True)
+
+    tk.Label(input_frame, text="Start").grid(padx=5, pady=10, row=0, column=0)
+    tk.Label(input_frame, text="Increment").grid(padx=5, pady=10, row=1, column=0)
+    tk.Label(input_frame, text="End").grid(padx=5, pady=10, row=2, column=0)
 
     self.start_var = tk.StringVar(value="10")
-    self.entry1 = tk.Entry(self.root, textvariable=self.start_var)
+    self.entry1 = tk.Entry(input_frame, textvariable=self.start_var)
     self.entry1.grid(pady=10, row=0, column=1)
     
     self.inc_var = tk.StringVar(value="10")
-    self.entry2 = tk.Entry(self.root, textvariable=self.inc_var)
+    self.entry2 = tk.Entry(input_frame, textvariable=self.inc_var)
     self.entry2.grid(pady=10, row=1, column=1)
     
     self.end_var = tk.StringVar(value="10")
-    self.entry3 = tk.Entry(self.root, textvariable=self.end_var)
+    self.entry3 = tk.Entry(input_frame, textvariable=self.end_var)
     self.entry3.grid(pady=10, row=2, column=1)
     
-    self.button1 = tk.Button(self.root, text="Generate", command=self.validate)
+    self.button1 = tk.Button(input_frame, text="Generate", command=self.validate)
     self.button1.grid(pady=10, row=3, column=0)
     
-    self.button2 = tk.Button(self.root, text="Close app", command=self.root.destroy)
+    self.button2 = tk.Button(input_frame, text="Close app", command=self.root.destroy)
     self.button2.grid(pady=10, row=3, column=1)
     
-    self.lbl = tk.Label(self.root)
+    self.lbl = tk.Label(input_frame)
     self.lbl.grid(pady=10, row=4, column=1)
+
+    # Create matplot figure
+    self.figure = Figure(figsize=(5, 4), dpi=100)
+    self.ax = self.figure.add_subplot(111)
+    self.setup_chart_formatting()
+
+    # Embed matplot figure
+    self.canvas = FigureCanvasTkAgg(self.figure, master=self.plot_frame)
+    self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+    self.canvas.draw()
+
+  def setup_chart_formatting(self):
+    self.ax.set_title("Algorithm Performance")
+    self.ax.set_xlabel("Number of Elements")
+    self.ax.set_ylabel("Execution Time (ms)")
+    self.ax.grid(True, linestyle='--', alpha=0.7)
 
   def getRandom():
     self.lbl.config(text=random.randint(1, 100))
