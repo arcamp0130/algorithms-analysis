@@ -1,15 +1,17 @@
 import tkinter as tk
 from tkinter import messagebox
 import random
+import time
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from algorithms import Algorithms
 
 class AnalyzerGUI:
   def __init__(self, root):
     self.root = root
     self.root.title("Analyzer")
     self.root.geometry("700x400")
-    self.root.resizable(False, False)
+    self.root.resizable(True, True)
 
     self.build()
 
@@ -56,23 +58,53 @@ class AnalyzerGUI:
     self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
     self.canvas.draw()
 
+
+  def graph(self, x, y_1, y_2):
+    self.ax.clear()
+    self.ax.plot(x, y_1,marker="o", label="Bubble")
+    self.ax.plot(x, y_2,marker="o", label="Selection", color="green")
+    self.setup_chart_formatting()
+    self.ax.legend()
+    self.canvas.draw()
+
+  def generate(self, start, inc, end):
+    elements_num = []
+    times_num_bubble = []
+    times_num_select = []
+
+    size = start
+    while size <= end:
+      arr_bubble = [random.randint(0,100000) for _ in range(size)]
+      arr_selection = arr_bubble # copying array
+
+      # measure for bubble
+      start_time_bubble = time.perf_counter()
+      Algorithms.bubble_sort_brute_force(arr_bubble)
+      end_time_bubble = time.perf_counter()
+      time_ms_bubble = (end_time_bubble - start_time_bubble)
+
+      # measure for selection
+      start_time_select = time.perf_counter()
+      Algorithms.selection_sort(arr_selection)
+      end_time_select = time.perf_counter()
+      time_ms_select = (end_time_select - start_time_select)
+
+      elements_num.append(size)
+      times_num_bubble.append(time_ms_bubble)
+      times_num_select.append(time_ms_select)
+
+      size += inc
+    self.graph(elements_num, times_num_bubble, times_num_select)
+         
+
   def setup_chart_formatting(self):
     self.ax.set_title("Algorithm Performance")
     self.ax.set_xlabel("Number of Elements")
     self.ax.set_ylabel("Execution Time (ms)")
     self.ax.grid(True, linestyle='--', alpha=0.7)
 
-  def getRandom():
-    self.lbl.config(text=random.randint(1, 100))
-    return
-
-  def greet():
-    name = entry1.get().strip()
-    if not name:
-      name = "Arath"
-    self.lbl.config(text=f"Hello, {name}")
-
   def validate(self):
+    
     try:
       # Fetch and cast inputs to integers
       start_val = int(self.start_var.get())
@@ -87,7 +119,8 @@ class AnalyzerGUI:
         self.lbl.config(text="End value must be greater than Start value.")
         return
 
-      self.lbl.config(text="Ready to generate")
+      self.lbl.config(text="Generating")
+      self.generate(start_val, inc_val, end_val)
 
     except ValueError:
       messagebox.showerror("Input Error", "Please enter valid whole numbers.")
