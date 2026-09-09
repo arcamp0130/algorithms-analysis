@@ -1,6 +1,19 @@
+import random
+
 class Algorithms:
     def __init__(self):
         pass
+
+    def bubble_sort_brute_force(arr):
+        n = len(arr)
+        # Ciclo externo corre n veces de forma fija
+        for i in range(n):
+        # Ciclo interno compara elementos adyacentes
+            for j in range(0, n - 1):
+                if arr[j] > arr[j + 1]:
+                # Intercambio de elementos
+                    arr[j], arr[j + 1] = arr[j + 1], arr[j]
+        return arr
 
     def insertion_sort(self, lista):
         """
@@ -66,3 +79,11 @@ class Algorithms:
                 if arr[j] < arr[i]:
                     arr[i], arr[j] = arr[j], arr[i]
         return arr
+
+class Utils:
+    def __init__(self):
+        pass
+
+    def generateArray(self, size, minVal, maxVal):
+        aux = [random.randint(minVal, maxVal) for i in range(size)]
+        return aux
