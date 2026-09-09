@@ -15,6 +15,19 @@ class Algorithms:
                     arr[j], arr[j + 1] = arr[j + 1], arr[j]
         return arr
 
+    def selection_sort(arr):
+        n = len(arr)
+        for i in range(n - 1):
+        # Suponemos que el primer elemento no ordenado es el menor
+            min_idx = i
+            # Buscamos en el resto de la lista
+            for j in range(i + 1, n):
+                if arr[j] < arr[min_idx]:
+                    min_idx = j
+                # Intercambiamos el menor encontrado con el primer elemento actual
+            arr[i], arr[min_idx] = arr[min_idx], arr[i]
+        return arr
+
     def insertion_sort(self, lista):
         """
         Ordenamiento por Inserción.
@@ -45,7 +58,7 @@ class Algorithms:
                 
         return arr
 
-    def stooge_sort_rec(self, arr, l, h):
+    def _stooge_sort_rec(self, arr, l, h):
         if l >= h:
             return
 
@@ -57,9 +70,9 @@ class Algorithms:
         if h - l + 1 > 2:
             t = (h - l + 1) // 3
             # Aplicar fuerza bruta a los 3 tercios superpuestos
-            self.stooge_sort_rec(arr, l, h - t)       # Primeros 2/3
-            self.stooge_sort_rec(arr, l + t, h)       # Últimos 2/3
-            self.stooge_sort_rec(arr, l, h - t)       # Primeros 2/3 de nuevo
+            self._stooge_sort_rec(arr, l, h - t)       # Primeros 2/3
+            self._stooge_sort_rec(arr, l + t, h)       # Últimos 2/3
+            self._stooge_sort_rec(arr, l, h - t)       # Primeros 2/3 de nuevo
 
     def stooge_sort(self, lista):
         arr = lista.copy()
